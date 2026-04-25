@@ -1,0 +1,2579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskNova — Project Management</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #111827;
+      --surface: #1F2937;
+      --surface2: #283548;
+      --surface3: #374151;
+      --border: rgba(229, 231, 235, 0.1);
+      --border2: rgba(229, 231, 235, 0.18);
+      --text: #F9FAFB;
+      --muted: #9CA3AF;
+      --accent: #4F46E5;
+      --accent2: #818CF8;
+      --green: #22C55E;
+      --orange: #F59E0B;
+      --red: #EF4444;
+      --pink: #EC4899;
+      --cyan: #06B6D4;
+      --radius: 14px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .app {
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: 60px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--surface3);
+      border-radius: 4px;
+    }
+
+    .logo {
+      padding: 24px 20px;
+      display: flex;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+
+
+    .nav {
+      padding: 12px 10px;
+      flex: 1;
+    }
+
+    .nav-section {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 8px 10px 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13.5px;
+      transition: all .15s;
+      margin-bottom: 1px;
+    }
+
+    .nav-item:hover {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: rgba(79, 70, 229, 0.15);
+      color: var(--accent2);
+    }
+
+    .nav-item svg {
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--accent);
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--surface2);
+      cursor: pointer;
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-info .uname {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-info .urole {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: capitalize;
+    }
+
+    .page-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+    }
+
+    .topbar-right {
+      margin-left: auto;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'DM Sans', sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #4338CA;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+    }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: var(--border2);
+    }
+
+    .btn-danger {
+      background: rgba(248, 113, 113, 0.15);
+      color: var(--red);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+    }
+
+    .btn-danger:hover {
+      background: rgba(248, 113, 113, 0.25);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      opacity: 0.08;
+      transform: translate(20px, -20px);
+    }
+
+    .stat-card.purple::after {
+      background: var(--accent);
+    }
+
+    .stat-card.green::after {
+      background: var(--green);
+    }
+
+    .stat-card.orange::after {
+      background: var(--orange);
+    }
+
+    .stat-card.red::after {
+      background: var(--red);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .stat-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .stat-card.purple .stat-value {
+      color: var(--accent2);
+    }
+
+    .stat-card.green .stat-value {
+      color: var(--green);
+    }
+
+    .stat-card.orange .stat-value {
+      color: var(--orange);
+    }
+
+    .stat-card.red .stat-value {
+      color: var(--red);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .project-card.active::before {
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+    }
+
+    .project-card.completed::before {
+      background: linear-gradient(90deg, var(--green), #34d399);
+    }
+
+    .project-card.on_hold::before {
+      background: linear-gradient(90deg, var(--orange), #fbbf24);
+    }
+
+    .project-card:hover {
+      border-color: rgba(79, 70, 229, 0.25);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(79, 70, 229, 0.08);
+    }
+
+    .project-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 14.5px;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .project-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 36px;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge-active {
+      background: rgba(79, 70, 229, 0.15);
+      color: var(--accent2);
+    }
+
+    .badge-review {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--cyan);
+    }
+
+    .badge-completed {
+      background: rgba(34, 211, 160, 0.15);
+      color: var(--green);
+    }
+
+    .badge-on_hold {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--orange);
+    }
+
+    .badge-archived {
+      background: var(--surface3);
+      color: var(--muted);
+    }
+
+    .project-tasks {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .members-row {
+      display: flex;
+      align-items: center;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .member-stack {
+      display: flex;
+    }
+
+    .member-stack .avatar {
+      width: 24px;
+      height: 24px;
+      font-size: 10px;
+      border: 2px solid var(--surface);
+      margin-right: -6px;
+    }
+
+    .member-count {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 12px;
+    }
+
+    .kanban {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .kanban-col {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .kanban-header {
+      padding: 14px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .dot-todo {
+      background: var(--muted);
+    }
+
+    .dot-in_progress {
+      background: var(--cyan);
+    }
+
+    .dot-review {
+      background: var(--orange);
+    }
+
+    .dot-done {
+      background: var(--green);
+    }
+
+    .col-count {
+      margin-left: auto;
+      background: var(--surface2);
+      padding: 1px 7px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .kanban-body {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 80px;
+    }
+
+    .task-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .task-card:hover {
+      border-color: var(--border2);
+      background: var(--surface3);
+    }
+
+    .task-title {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .task-footer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .priority-badge {
+      display: inline-flex;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .p-low {
+      background: rgba(34, 211, 160, 0.12);
+      color: var(--green);
+    }
+
+    .p-medium {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--cyan);
+    }
+
+    .p-high {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--orange);
+    }
+
+    .p-critical {
+      background: rgba(248, 113, 113, 0.12);
+      color: var(--red);
+    }
+
+    .task-assignee {
+      margin-left: auto;
+    }
+
+    .task-comments {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      width: min(480px, 95vw);
+      padding: 28px;
+      transform: translateY(10px);
+      transition: transform .2s;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-overlay.show .modal {
+      transform: translateY(0);
+    }
+
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 13.5px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent);
+    }
+
+    .form-control::placeholder {
+      color: var(--muted);
+    }
+
+    select.form-control option {
+      background: var(--surface2);
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .auth-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 20%, rgba(79, 70, 229, 0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, rgba(34, 197, 94, 0.08) 0%, transparent 60%);
+    }
+
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 40px;
+      width: min(420px, 100%);
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+
+
+    .auth-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .auth-sub {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    .auth-toggle {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .auth-toggle a {
+      color: var(--accent2);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .error-msg {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      color: var(--red);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 13px;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .success-msg {
+      background: rgba(34, 211, 160, 0.1);
+      border: 1px solid rgba(34, 211, 160, 0.2);
+      color: var(--green);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 13px;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .detail-info {
+      flex: 1;
+    }
+
+    .detail-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .detail-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .back-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+      padding: 7px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .back-btn:hover {
+      color: var(--text);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state svg {
+      opacity: 0.3;
+      margin-bottom: 12px;
+    }
+
+    .empty-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .empty-sub {
+      font-size: 13px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface3);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      font-size: 13px;
+      z-index: 9999;
+      transform: translateY(80px);
+      transition: transform .3s;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+    }
+
+    .toast.success {
+      border-left: 3px solid var(--green);
+    }
+
+    .toast.error {
+      border-left: 3px solid var(--red);
+    }
+
+    .api-url-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .api-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    .api-dot.offline {
+      background: var(--red);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .password-wrapper { position: relative; }
+    .password-toggle {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      padding: 4px; display: flex; align-items: center; transition: color 0.2s;
+    }
+    .password-toggle:hover { color: var(--text); }
+    .password-wrapper .form-control { padding-right: 42px; }
+
+    .logo-img { width: 140px; height: auto; object-fit: contain; }
+    .auth-logo-img { width: 180px; height: auto; object-fit: contain; }
+    .logo { cursor: pointer; transition: opacity 0.2s; }
+    .logo:hover { opacity: 0.85; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeScale { from { opacity: 0; transform: scale(0.93); } to { opacity: 1; transform: scale(1); } }
+    @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+    @keyframes float1 { 0%,100% { transform: translate(0,0) rotate(0deg); } 33% { transform: translate(30px,-40px) rotate(5deg); } 66% { transform: translate(-20px,-55px) rotate(-3deg); } }
+    @keyframes float2 { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-35px,25px) rotate(-5deg); } }
+    @keyframes float3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(20px,-40px) scale(1.08); } }
+    @keyframes rippleEffect { to { transform: scale(4); opacity: 0; } }
+    @keyframes toastIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+    @keyframes dashWidget { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes navSlide { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    .view.active { animation: fadeIn 0.32s ease-out; }
+
+
+    .stat-card { animation: dashWidget 0.45s ease-out both; }
+    .stat-card:nth-child(1) { animation-delay: 0.04s; }
+    .stat-card:nth-child(2) { animation-delay: 0.1s; }
+    .stat-card:nth-child(3) { animation-delay: 0.16s; }
+    .stat-card:nth-child(4) { animation-delay: 0.22s; }
+    .stat-card:nth-child(5) { animation-delay: 0.28s; }
+
+    .nav-item { animation: navSlide 0.28s ease-out both; }
+    .nav-item:nth-child(1) { animation-delay: 0.04s; }
+    .nav-item:nth-child(2) { animation-delay: 0.08s; }
+    .nav-item:nth-child(3) { animation-delay: 0.12s; }
+    .nav-item:nth-child(4) { animation-delay: 0.16s; }
+    .nav-item:nth-child(5) { animation-delay: 0.2s; }
+
+    .project-card { animation: slideUp 0.38s ease-out both; transition: all 0.28s cubic-bezier(0.4,0,0.2,1); }
+    .project-card:nth-child(1) { animation-delay: 0.04s; }
+    .project-card:nth-child(2) { animation-delay: 0.09s; }
+    .project-card:nth-child(3) { animation-delay: 0.14s; }
+    .project-card:nth-child(4) { animation-delay: 0.19s; }
+    .project-card:nth-child(5) { animation-delay: 0.24s; }
+    .project-card:nth-child(6) { animation-delay: 0.29s; }
+
+    .kanban-col { animation: slideUp 0.38s ease-out both; }
+    .kanban-col:nth-child(1) { animation-delay: 0.04s; }
+    .kanban-col:nth-child(2) { animation-delay: 0.1s; }
+    .kanban-col:nth-child(3) { animation-delay: 0.16s; }
+    .kanban-col:nth-child(4) { animation-delay: 0.22s; }
+
+    .auth-card { animation: fadeScale 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+
+
+    .auth-shape { position: absolute; border-radius: 50%; opacity: 0.06; filter: blur(2px); pointer-events: none; }
+    .auth-shape-1 { width: 300px; height: 300px; background: var(--accent); top: -80px; left: -100px; animation: float1 18s ease-in-out infinite; }
+    .auth-shape-2 { width: 220px; height: 220px; background: var(--green); bottom: -50px; right: -50px; animation: float2 22s ease-in-out infinite; }
+    .auth-shape-3 { width: 160px; height: 160px; background: var(--orange); top: 40%; right: 18%; animation: float3 15s ease-in-out infinite; }
+    .auth-shape-4 { width: 100px; height: 100px; background: var(--accent2); bottom: 28%; left: 12%; animation: float2 20s ease-in-out infinite reverse; }
+
+    .btn .ripple-span { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.22); transform: scale(0); animation: rippleEffect 0.55s linear; pointer-events: none; }
+
+
+    .toast.show { transform: translateX(0); animation: toastIn 0.4s cubic-bezier(0.21,1.02,0.73,1) forwards; }
+    .toast.hiding { animation: toastOut 0.3s ease-in forwards; }
+
+    .skeleton { background: linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%); background-size: 800px 100%; animation: shimmer 1.6s infinite linear; border-radius: var(--radius-sm); }
+
+
+    .task-card { transition: all 0.22s cubic-bezier(0.4,0,0.2,1); }
+    .task-card:active { transform: scale(0.97); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+
+    .card { animation: fadeScale 0.4s ease-out both; }
+
+
+
+
+    @media(max-width:768px) {
+      .sidebar {
+        display: none
+      }
+
+      .kanban {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="authScreen" class="auth-wrap">
+    <div class="auth-bg">
+      <div class="auth-shape auth-shape-1"></div>
+      <div class="auth-shape auth-shape-2"></div>
+      <div class="auth-shape auth-shape-3"></div>
+      <div class="auth-shape auth-shape-4"></div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="logo.png" class="auth-logo-img" alt="TaskNova">
+      </div>
+      <div id="authTitle" class="auth-title">Welcome back</div>
+      <div id="authSub" class="auth-sub">Sign in to your workspace</div>
+      <div id="authError" class="error-msg"></div>
+      <div id="authSuccess" class="success-msg"></div>
+
+      <div id="registerField" class="form-group" style="display:none">
+        <label class="form-label">Full Name</label>
+        <input class="form-control" id="regName" placeholder="Jane Smith">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-control" id="authEmail" type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-wrapper">
+          <input class="form-control" id="authPassword" type="password" placeholder="••••••••">
+          <button type="button" class="password-toggle" id="pwToggleBtn" onclick="togglePasswordVisibility()">
+            <svg id="eyeOpen" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg id="eyeClosed" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="registerRoleField" class="form-group" style="display:none">
+        <label class="form-label">Role</label>
+        <select class="form-control" id="regRole">
+          <option value="member">Member</option>
+          <option value="manager">Manager</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" id="authBtn" style="width:100%;justify-content:center;padding:11px"
+        onclick="doAuth()">Sign In</button>
+
+      <div class="auth-toggle" id="authToggle">
+        Don't have an account? <a onclick="toggleAuth()">Sign up</a>
+      </div>
+
+      <input id="apiBaseUrl" type="hidden" value="http://localhost:8000">
+    </div>
+  </div>
+
+  <div id="mainApp" class="app" style="display:none">
+    <div class="sidebar">
+      <div class="logo" onclick="showView('dashboard')" title="Go to Dashboard">
+        <img src="logo.png" class="logo-img" alt="TaskNova">
+      </div>
+      <div class="nav">
+        <div class="nav-section">Workspace</div>
+        <div class="nav-item active" id="nav-dashboard" onclick="showView('dashboard')">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+          </svg>
+          Dashboard
+        </div>
+        <div class="nav-item" id="nav-projects" onclick="showView('projects')">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+          </svg>
+          Projects
+          <span class="nav-badge" id="projectsCount">0</span>
+        </div>
+        <div class="nav-item" id="nav-tasks" onclick="showView('tasks')" style="display:none">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+          </svg>
+          Tasks
+        </div>
+        <div class="nav-item" id="nav-users" onclick="showView('users')" style="display:none">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          Users
+        </div>
+        <div class="nav-item" id="nav-profile" onclick="showView('profile')">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+          Profile
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="user-chip" onclick="showView('profile')">
+          <div class="avatar" id="sidebarAvatar" style="background:#6C63FF;color:#fff;overflow:hidden">U</div>
+          <div class="user-info">
+            <div class="uname" id="sidebarName">User</div>
+            <div class="urole" id="sidebarRole">member</div>
+          </div>
+          <input type="file" id="pfpInput" style="display:none" accept="image/*" onchange="handlePfpUpload(event)">
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="logout()"
+          style="width:100%;justify-content:center;margin-top:8px">Sign out</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="page-title" id="pageTitle">Dashboard</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-left:16px;font-size:12px;color:var(--muted)">
+          <div class="api-dot" id="apiStatusDot"></div>
+          <span id="apiStatusText">Connected</span>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-primary" id="topActionBtn" style="display:none" onclick="topAction()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span id="topActionLabel">New Project</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div id="view-dashboard" class="view active">
+          <div class="stats-grid" id="statsGrid">
+            <div class="stat-card purple">
+              <div class="stat-label">Total Projects</div>
+              <div class="stat-value" id="s-totalProjects">—</div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-label">Lifetime Completed</div>
+              <div class="stat-value" id="s-lifetimeCompleted">0</div>
+              <div class="stat-sub">Assigned projects done</div>
+            </div>
+            <div class="stat-card cyan">
+              <div class="stat-label">Active Projects</div>
+              <div class="stat-value" id="s-activeProjects">0</div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-label">In Progress Tasks</div>
+              <div class="stat-value" id="s-inProgressTasks">0</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-label">Overdue Tasks</div>
+              <div class="stat-value" id="s-overdueTasks">—</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px">
+            <div class="card" style="padding:24px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                <h3 style="margin:0;font-size:18px">Work Progress</h3>
+                <span style="font-size:12px;color:var(--muted)">Task Distribution</span>
+              </div>
+              <div style="height:280px;display:flex;justify-content:center;align-items:center">
+                <canvas id="progressChart"></canvas>
+              </div>
+            </div>
+
+            <div class="card" style="padding:24px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                <h3 style="margin:0;font-size:18px">Project Coverage</h3>
+                <span style="font-size:12px;color:var(--muted)">Completion Range</span>
+              </div>
+              <div style="height:280px;display:flex;justify-content:center;align-items:center">
+                <canvas id="completionChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:24px">
+            <div class="card" style="padding:24px;display:flex;flex-direction:column">
+              <div class="section-header" style="margin-bottom:16px">
+                <div class="section-title" style="font-size:18px">Recent Projects</div>
+              </div>
+              <div class="projects-grid" id="dashProjectsGrid" style="grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:12px"></div>
+              <button class="btn btn-ghost btn-sm" onclick="showView('projects')" style="margin-top:16px;align-self:center">View all Projects →</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-projects" class="view">
+          <div class="projects-grid" id="projectsGrid"></div>
+        </div>
+
+        <div id="view-tasks" class="view">
+          <button class="back-btn" onclick="goBackToProjects()" style="margin-bottom:16px">
+            ← Back to Projects
+          </button>
+          <div class="detail-header" id="projectDetailHeader"></div>
+          <div class="section-header">
+            <div class="section-title">Kanban Board</div>
+            <div style="display:flex;gap:10px">
+              <button class="btn btn-ghost btn-sm" onclick="openManageMembers()" id="manageMembersBtn">Manage Members</button>
+              <button class="btn btn-primary btn-sm" onclick="openCreateTask()" id="createNewTaskBtn">+ New Task</button>
+            </div>
+          </div>
+          
+          <div class="card" id="projectProgressSection" style="margin-bottom:24px;display:none;background:var(--surface2)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+              <h4 style="margin:0;font-size:14px;color:var(--text)">Update Project Progress</h4>
+              <span id="progressPercentDisplay" style="font-size:14px;font-weight:700;color:var(--accent2)">0%</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:end">
+              <div>
+                <label class="form-label" style="font-size:10px">Completion Percentage</label>
+                <input type="range" id="progressRange" min="0" max="100" step="1" value="0" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById('progressPercentDisplay').textContent = this.value + '%'">
+              </div>
+              <div style="display:flex;gap:10px;align-items:center">
+                <div style="flex:1">
+                  <label class="form-label" style="font-size:10px">Completion Image / Evidence</label>
+                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('evidenceInput').click()" style="width:100%">Choose Image</button>
+                  <input type="file" id="evidenceInput" style="display:none" accept="image/*" onchange="previewEvidence(event)">
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="saveProjectProgress()" style="height:36px">Update Progress</button>
+              </div>
+            </div>
+            <div id="evidencePreviewContainer" style="margin-top:16px;display:none;border-top:1px solid var(--border);padding-top:16px">
+                <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Evidence Preview:</div>
+                <img id="evidencePreviewImg" src="" style="max-height:150px;border-radius:var(--radius-sm);border:1px solid var(--border2)">
+            </div>
+          </div>
+
+          <div class="kanban" id="kanbanBoard" style="margin-bottom:32px"></div>
+
+          <div id="projectCommentsSection" style="margin-top:40px;border-top:1px solid var(--border);padding-top:32px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+              <h3 style="margin:0;font-size:18px">Project Feedback & Comments</h3>
+              <div id="projectReviewActions" style="display:flex;gap:8px"></div>
+            </div>
+            
+            <div class="card" style="padding:20px;margin-bottom:24px">
+              <div style="display:flex;gap:12px">
+                <textarea class="form-control" id="projectCommentContent" placeholder="Ask for changes or provide feedback..." style="flex:1;min-height:48px"></textarea>
+                <button class="btn btn-primary" onclick="saveProjectComment()" id="submitProjectCommentBtn" style="height:auto">Post</button>
+              </div>
+            </div>
+
+            <div id="projectCommentsList" style="display:flex;flex-direction:column;gap:16px"></div>
+          </div>
+        </div>
+
+        <div id="view-users" class="view">
+          <div class="card" style="padding:0;overflow:hidden">
+            <table style="width:100%;border-collapse:collapse;text-align:left">
+              <thead>
+                <tr style="background:var(--surface2);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">
+                  <th style="padding:16px 20px;font-weight:600">User</th>
+                  <th style="padding:16px 20px;font-weight:600">Email</th>
+                  <th style="padding:16px 20px;font-weight:600">Role</th>
+                  <th style="padding:16px 20px;font-weight:600">Joined</th>
+                  <th style="padding:16px 20px;font-weight:600;text-align:right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="userTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="view-profile" class="view">
+          <div style="max-width:800px;margin:0 auto">
+            <div class="card" style="margin-bottom:24px;padding:32px">
+              <div style="display:flex;align-items:center;gap:32px;margin-bottom:32px">
+                <div style="position:relative">
+                  <div class="avatar" id="profilePageAvatar" style="width:120px;height:120px;font-size:40px;border:4px solid var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden"></div>
+                  <button class="btn btn-primary btn-sm" onclick="triggerPfpUpload()" style="position:absolute;bottom:0;right:0;border-radius:50%;width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.3)">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  </button>
+                </div>
+                <div>
+                  <h2 id="profileNameDisplay" style="margin:0 0 4px 0;font-size:28px;color:var(--text)">Name</h2>
+                  <div id="profileEmailDisplay" style="color:var(--muted);font-size:14px;margin-bottom:12px">email@example.com</div>
+                  <span id="profileRoleBadge" class="badge" style="background:var(--primary);color:#fff;font-size:12px;padding:4px 12px;text-transform:capitalize">Member</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Bio (Public to Project Members)</label>
+                <textarea class="form-control" id="profileBio" rows="3" placeholder="Tell us about yourself..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Personal Notes (Private - Only you see this)</label>
+                <textarea class="form-control" id="profileNotes" rows="5" placeholder="Write something for yourself..."></textarea>
+                <div style="font-size:11px;color:var(--muted);margin-top:6px">These notes are strictly private.</div>
+              </div>
+
+              <div id="roleSpecificFields" style="border-top:1px solid var(--border);padding-top:24px;margin-top:24px">
+              </div>
+
+              <div style="margin-top:32px;display:flex;justify-content:flex-end">
+                <button class="btn btn-primary" onclick="saveProfile()" id="saveProfileBtn">Save Profile Changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="projectModal">
+    <div class="modal">
+      <div class="modal-title" id="projectModalTitle">New Project</div>
+      <div class="form-group">
+        <label class="form-label">Project Name *</label>
+        <input class="form-control" id="pmName" placeholder="Redesign the onboarding flow">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" id="pmDesc" placeholder="What's this project about?"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-control" id="pmStatus">
+            <option value="active">Active</option>
+            <option value="on_hold">On Hold</option>
+            <option value="completed">Completed</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deadline</label>
+          <input class="form-control" id="pmDeadline" type="date">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('projectModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveProject()">Save Project</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal">
+      <div class="modal-title">New Task</div>
+      <div class="form-group">
+        <label class="form-label">Task Title *</label>
+        <input class="form-control" id="tmTitle" placeholder="Implement authentication flow">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" id="tmDesc" placeholder="Details..."></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select class="form-control" id="tmPriority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Due Date</label>
+          <input class="form-control" id="tmDueDate" type="date">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Assignee</label>
+        <select class="form-control" id="tmAssignee">
+          <option value="">Unassigned</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('taskModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveTask()">Create Task</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="taskDetailModal">
+    <div class="modal" style="width:min(560px,95vw)">
+      <div id="taskDetailContent"></div>
+      <div class="modal-footer">
+        <button class="btn btn-danger btn-sm" id="deleteTaskBtn" onclick="deleteCurrentTask()">Delete</button>
+        <button class="btn btn-ghost" onclick="closeModal('taskDetailModal')">Close</button>
+        <button class="btn btn-primary" onclick="updateTaskStatus()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="memberModal">
+    <div class="modal">
+      <div class="modal-title">Manage Project Members</div>
+      <div class="form-group">
+        <label class="form-label">Add Member</label>
+        <div style="display:flex;gap:8px">
+          <select class="form-control" id="mmUserSelect">
+            <option value="">Select a user...</option>
+          </select>
+          <button class="btn btn-primary" onclick="addMember()">Add</button>
+        </div>
+      </div>
+      <div style="margin-top:20px">
+        <label class="form-label">Current Members</label>
+        <div id="mmCurrentMembers" style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('memberModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = 'http://localhost:8000';
+    let TOKEN = localStorage.getItem('tasknova_token');
+    let CURRENT_USER = JSON.parse(localStorage.getItem('tasknova_user') || 'null');
+    let CURRENT_PROJECT = null;
+    let EDITING_PROJECT_ID = null;
+    let CURRENT_TASK = null;
+    let isLogin = true;
+    let allUsers = [];
+    let progressChart = null;
+    let completionChart = null;
+
+
+    window.onload = () => {
+      if (TOKEN && CURRENT_USER) {
+        showApp();
+      } else {
+        document.getElementById('authScreen').style.display = 'flex';
+      }
+    };
+
+    function showApp() {
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'flex';
+      updateSidebar();
+      loadDashboard();
+      showView('dashboard');
+      checkApiStatus();
+    }
+
+    function updateSidebar() {
+      if (!CURRENT_USER) return;
+      
+      const av = document.getElementById('sidebarAvatar');
+      if (CURRENT_USER.profile_picture) {
+        av.innerHTML = `<img src="${CURRENT_USER.profile_picture}" style="width:100%;height:100%;object-fit:cover">`;
+      } else {
+        const initials = CURRENT_USER.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+        av.textContent = initials;
+      }
+      
+      av.style.background = CURRENT_USER.avatar_color || '#6C63FF';
+      document.getElementById('sidebarName').textContent = CURRENT_USER.name;
+      document.getElementById('sidebarRole').textContent = CURRENT_USER.role;
+
+
+      const isAdmin = CURRENT_USER.role === 'admin';
+      document.getElementById('nav-users').style.display = isAdmin ? 'flex' : 'none';
+    }
+
+    async function api(method, path, body) {
+      const url = API + path;
+      const opts = {
+        method,
+        headers: { 'Content-Type': 'application/json', ...(TOKEN ? { Authorization: 'Bearer ' + TOKEN } : {}) }
+      };
+      if (body) opts.body = JSON.stringify(body);
+      try {
+        const res = await fetch(url, opts);
+        if (res.status === 204) return null;
+        const data = await res.json();
+        if (!res.ok) {
+           console.error(`API Error [${res.status}] ${path}:`, data);
+           const detail = data.detail;
+           const msg = typeof detail === 'string' ? detail : Array.isArray(detail) ? detail.map(e => e.msg || e.message || JSON.stringify(e)).join(', ') : 'Request failed';
+           throw new Error(msg);
+        }
+        return data;
+      } catch (e) {
+        console.error(`Network or Fetch Error ${path}:`, e);
+        if (e.message === 'Failed to fetch') {
+           throw new Error('Could not connect to server. Ensure backend is running.');
+        }
+        throw e;
+      }
+    }
+
+    async function checkApiStatus() {
+      const dot = document.getElementById('apiStatusDot');
+      const txt = document.getElementById('apiStatusText');
+      try {
+        await fetch(API + '/docs', { mode: 'no-cors' });
+        dot.classList.remove('offline');
+        txt.textContent = 'Connected';
+      } catch {
+        dot.classList.add('offline');
+        txt.textContent = 'Server offline';
+      }
+    }
+
+    function toggleAuth() {
+      isLogin = !isLogin;
+      document.getElementById('authTitle').textContent = isLogin ? 'Welcome back' : 'Create account';
+      document.getElementById('authSub').textContent = isLogin ? 'Sign in to your workspace' : 'Get started with TaskNova';
+      document.getElementById('authBtn').textContent = isLogin ? 'Sign In' : 'Create Account';
+      document.getElementById('registerField').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('registerRoleField').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('authToggle').innerHTML = isLogin
+        ? "Don't have an account? <a onclick='toggleAuth()'>Sign up</a>"
+        : "Already have an account? <a onclick='toggleAuth()'>Sign in</a>";
+      document.getElementById('authError').style.display = 'none';
+      document.getElementById('authSuccess').style.display = 'none';
+    }
+
+    async function doAuth() {
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const errEl = document.getElementById('authError');
+      const successEl = document.getElementById('authSuccess');
+      errEl.style.display = 'none';
+      successEl.style.display = 'none';
+
+      if (!email || !password) { errEl.textContent = 'Please fill in all fields.'; errEl.style.display = 'block'; return; }
+
+      try {
+        if (!isLogin) {
+          const name = document.getElementById('regName').value.trim();
+          const role = document.getElementById('regRole').value;
+          if (!name) { errEl.textContent = 'Name is required.'; errEl.style.display = 'block'; return; }
+          await api('POST', '/auth/register', { name, email, password, role });
+          successEl.textContent = 'Account created! Signing you in...';
+          successEl.style.display = 'block';
+          await new Promise(r => setTimeout(r, 700));
+        }
+        const data = await api('POST', '/auth/login', { email, password });
+        TOKEN = data.access_token;
+        CURRENT_USER = data.user;
+        localStorage.setItem('tasknova_token', TOKEN);
+        localStorage.setItem('tasknova_user', JSON.stringify(CURRENT_USER));
+        showApp();
+      } catch (e) {
+        errEl.textContent = e.message;
+        errEl.style.display = 'block';
+      }
+    }
+
+    document.getElementById('authPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doAuth(); });
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById('authPassword');
+      const eyeOpen = document.getElementById('eyeOpen');
+      const eyeClosed = document.getElementById('eyeClosed');
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeOpen.style.display = 'none';
+        eyeClosed.style.display = 'block';
+      } else {
+        input.type = 'password';
+        eyeOpen.style.display = 'block';
+        eyeClosed.style.display = 'none';
+      }
+    }
+
+    function logout() {
+      TOKEN = null; CURRENT_USER = null;
+      localStorage.removeItem('tasknova_token');
+      localStorage.removeItem('tasknova_user');
+      document.getElementById('authScreen').style.display = 'flex';
+      document.getElementById('mainApp').style.display = 'none';
+    }
+
+    function showView(v) {
+      document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById('view-' + v).classList.add('active');
+      const navEl = document.getElementById('nav-' + v);
+      if (navEl) navEl.classList.add('active');
+
+      const titles = { dashboard: 'Dashboard', projects: 'Projects', tasks: 'Tasks', users: 'User Management', profile: 'My Profile' };
+      document.getElementById('pageTitle').textContent = titles[v] || v;
+      
+      if (v === 'profile') loadProfileData();
+
+      const canCreate = CURRENT_USER && ['admin', 'manager'].includes(CURRENT_USER.role);
+      const actionBtn = document.getElementById('topActionBtn');
+      const actionLabel = document.getElementById('topActionLabel');
+
+      if (v === 'projects' && canCreate) {
+        actionBtn.style.display = 'flex';
+        actionLabel.textContent = 'New Project';
+      } else {
+        actionBtn.style.display = 'none';
+      }
+
+      if (v === 'projects') loadProjects();
+      if (v === 'dashboard') loadDashboard();
+      if (v === 'users') loadUsers();
+    }
+
+    function topAction() {
+      const v = document.querySelector('.view.active').id.replace('view-', '');
+      if (v === 'projects') openCreateProject();
+    }
+
+    async function loadDashboard() {
+      try {
+        const stats = await api('GET', '/dashboard/stats');
+        document.getElementById('s-totalProjects').textContent = stats.total_projects;
+        document.getElementById('s-activeProjects').textContent = stats.active_projects;
+        document.getElementById('s-lifetimeCompleted').textContent = stats.lifetime_completed_projects;
+        document.getElementById('s-inProgressTasks').textContent = stats.in_progress_tasks;
+        document.getElementById('s-overdueTasks').textContent = stats.overdue_tasks;
+        
+        renderProgressChart(stats.task_status_distribution);
+        renderCompletionChart(stats.project_completion_distribution);
+      } catch (e) {
+        document.getElementById('s-totalProjects').textContent = '—';
+      }
+      try {
+        const projects = await api('GET', '/projects');
+        allProjects = projects;
+        document.getElementById('projectsCount').textContent = projects.length;
+        const grid = document.getElementById('dashProjectsGrid');
+        const recent = projects.slice(0, 4);
+        if (!recent.length) {
+          grid.innerHTML = `<div class="empty-state"><div class="empty-title">No projects yet</div><div class="empty-sub">Create your first project to get started</div></div>`;
+          return;
+        }
+        grid.innerHTML = recent.map(renderProjectCard).join('');
+      } catch (e) { }
+    }
+
+    async function loadProjects() {
+      try {
+        const projects = await api('GET', '/projects');
+        allProjects = projects;
+        document.getElementById('projectsCount').textContent = projects.length;
+        const grid = document.getElementById('projectsGrid');
+        if (!projects.length) {
+          grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><div class="empty-title">No projects yet</div><div class="empty-sub">Create your first project to start managing work</div></div>`;
+          return;
+        }
+        grid.innerHTML = projects.map(renderProjectCard).join('');
+      } catch (e) {
+        showToast('Failed to load projects: ' + e.message, 'error');
+      }
+    }
+
+    function renderProjectCard(p) {
+      const members = (p.members || []).slice(0, 5);
+      const memberAvatars = members.map(m => {
+        const content = m.profile_picture 
+          ? `<img src="${m.profile_picture}" style="width:100%;height:100%;object-fit:cover">`
+          : m.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+        return `<div class="avatar" style="background:${m.avatar_color || '#6C63FF'};color:#fff;overflow:hidden">${content}</div>`;
+      }).join('');
+      const extraMembers = (p.members || []).length > 5 ? `<span style="font-size:11px;color:var(--muted);margin-left:8px">+${p.members.length - 5}</span>` : '';
+      const dl = p.deadline ? `<span class="badge" style="background:var(--surface2);color:var(--muted)">📅 ${new Date(p.deadline).toLocaleDateString('en', { month: 'short', day: 'numeric' })}</span>` : '';
+      
+      const progress = p.completion_percentage || 0;
+      const progressHtml = `
+        <div style="margin-top:14px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+            <span style="color:var(--muted)">Progress</span>
+            <span style="color:var(--accent2);font-weight:600">${progress}%</span>
+          </div>
+          <div style="height:4px;background:var(--surface3);border-radius:10px;overflow:hidden">
+            <div style="width:${progress}%;height:100%;background:linear-gradient(90deg, var(--accent), var(--cyan));border-radius:10px transition:width .3s"></div>
+          </div>
+        </div>
+      `;
+
+      return `<div class="project-card ${p.status}" onclick="openProject(${p.id})">
+      <div class="project-name">${p.name}</div>
+      <div class="project-desc">${p.description || 'No description provided'}</div>
+      <div class="project-meta">
+        <span class="badge badge-${p.status}">${p.status.replace('_', ' ')}</span>
+        ${dl}
+        <span class="project-tasks">${p.task_count || 0} tasks</span>
+      </div>
+      ${progressHtml}
+      <div class="members-row">
+        <div class="member-stack">${memberAvatars}</div>
+        ${extraMembers}
+        <span class="member-count" style="margin-left:${members.length ? '14px' : '0'}">${(p.members || []).length} member${p.members?.length !== 1 ? 's' : ''}</span>
+      </div>
+    </div>`;
+    }
+
+    function openCreateProject() {
+      EDITING_PROJECT_ID = null;
+      document.getElementById('projectModalTitle').textContent = 'New Project';
+      document.getElementById('pmName').value = '';
+      document.getElementById('pmDesc').value = '';
+      document.getElementById('pmStatus').value = 'active';
+      document.getElementById('pmDeadline').value = '';
+      openModal('projectModal');
+    }
+
+    async function saveProject() {
+      const name = document.getElementById('pmName').value.trim();
+      if (!name) { showToast('Project name is required', 'error'); return; }
+      const body = {
+        name,
+        description: document.getElementById('pmDesc').value.trim() || null,
+        status: document.getElementById('pmStatus').value,
+        deadline: document.getElementById('pmDeadline').value || null
+      };
+      try {
+        if (EDITING_PROJECT_ID) {
+          await api('PUT', '/projects/' + EDITING_PROJECT_ID, body);
+          showToast('Project updated!', 'success');
+        } else {
+          await api('POST', '/projects', body);
+          showToast('Project created!', 'success');
+        }
+        closeModal('projectModal');
+        loadProjects();
+        loadDashboard();
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
+    }
+
+
+    async function openProject(id) {
+      CURRENT_PROJECT = allProjects.find(p => p.id === id);
+      if (!CURRENT_PROJECT) return;
+
+      document.getElementById('nav-tasks').style.display = 'flex';
+      showView('tasks');
+
+      const h = document.getElementById('projectDetailHeader');
+      const canEdit = CURRENT_USER && ['admin', 'manager'].includes(CURRENT_USER.role);
+      h.innerHTML = `
+      <div class="detail-info">
+        <div class="detail-name">${CURRENT_PROJECT.name}</div>
+        <div class="detail-desc">${CURRENT_PROJECT.description || 'No description'}</div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <span class="badge badge-${CURRENT_PROJECT.status}">${CURRENT_PROJECT.status.replace('_', ' ')}</span>
+          <span style="font-size:12px;color:var(--muted)">Owner: ${CURRENT_PROJECT.owner?.name || '—'}</span>
+          ${CURRENT_PROJECT.deadline ? `<span style="font-size:12px;color:var(--muted)">Deadline: ${new Date(CURRENT_PROJECT.deadline).toLocaleDateString()}</span>` : ''}
+        </div>
+      </div>
+      ${canEdit ? `<div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="editProject(${CURRENT_PROJECT.id})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProject(${CURRENT_PROJECT.id})">Delete</button>
+      </div>` : ''}
+    `;
+
+      await loadTasks();
+      updateAssigneeDropdowns();
+      await loadProjectComments();
+
+
+      const role = CURRENT_USER?.role;
+      const isAdminOrManager = ['admin', 'manager'].includes(role);
+      const isAdmin = role === 'admin';
+      const isMember = CURRENT_PROJECT.members.some(m => m.id === CURRENT_USER.id);
+
+
+      const canUpdateProgress = isMember && CURRENT_PROJECT.status === 'active';
+      document.getElementById('projectProgressSection').style.display = canUpdateProgress ? 'block' : 'none';
+      
+      const range = document.getElementById('progressRange');
+      range.value = CURRENT_PROJECT.completion_percentage || 0;
+      document.getElementById('progressPercentDisplay').textContent = (CURRENT_PROJECT.completion_percentage || 0) + '%';
+      
+
+      const prev = document.getElementById('evidencePreviewContainer');
+      const img = document.getElementById('evidencePreviewImg');
+      
+      if (CURRENT_PROJECT.completion_image) {
+        prev.style.display = 'block';
+        if (isAdmin) {
+          img.src = CURRENT_PROJECT.completion_image;
+          img.style.display = 'block';
+
+          const msg = prev.querySelector('.restriction-msg');
+          if (msg) msg.remove();
+        } else {
+          img.style.display = 'none';
+          if (!prev.querySelector('.restriction-msg')) {
+            prev.insertAdjacentHTML('beforeend', `<div class="restriction-msg" style="padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:12px;color:var(--muted);text-align:center">Evidence image is restricted to Administrators</div>`);
+          }
+        }
+      } else {
+        prev.style.display = 'none';
+        img.src = '';
+      }
+
+
+      const reviewActions = document.getElementById('projectReviewActions');
+      reviewActions.innerHTML = '';
+      
+      if (isAdminOrManager && CURRENT_PROJECT.status === 'review') {
+        reviewActions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="approveProject()" style="padding:6px 12px">Approve & Complete Project</button>`;
+      } else if (isMember && CURRENT_PROJECT.status === 'active' && CURRENT_PROJECT.completion_percentage === 100) {
+        reviewActions.innerHTML = `<button class="btn btn-accent btn-sm" onclick="submitForReview()" style="padding:6px 12px;background:var(--cyan);color:#fff;border-color:var(--cyan)">Submit for Review</button>`;
+      }
+
+
+      const canCreateTask = isAdminOrManager;
+      document.getElementById('createNewTaskBtn').style.display = canCreateTask ? 'inline-flex' : 'none';
+    }
+
+    let evidenceBase64 = null;
+    function previewEvidence(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        evidenceBase64 = event.target.result;
+        document.getElementById('evidencePreviewContainer').style.display = 'block';
+        document.getElementById('evidencePreviewImg').src = evidenceBase64;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function saveProjectProgress() {
+      if (!isMemberOfProject(CURRENT_USER.id)) {
+        showToast('Only project members can update progress', 'error');
+        return;
+      }
+      const progress = parseInt(document.getElementById('progressRange').value);
+      const body = { completion_percentage: progress };
+      if (evidenceBase64) body.completion_image = evidenceBase64;
+      
+      try {
+        const updated = await api('PUT', `/projects/${CURRENT_PROJECT.id}`, body);
+        CURRENT_PROJECT = updated;
+        showToast('Progress updated successfully!', 'success');
+        evidenceBase64 = null;
+        loadProjects();
+        openProject(updated.id);
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
+    }
+
+    async function submitForReview() {
+      if (!confirm('Submit this project for review?')) return;
+      try {
+        const updated = await api('PUT', `/projects/${CURRENT_PROJECT.id}`, { status: 'review' });
+        CURRENT_PROJECT = updated;
+        showToast('Project submitted for review!', 'success');
+        openProject(updated.id);
+        loadProjects();
+      } catch (e) { showToast(e.message, 'error'); }
+    }
+
+    async function approveProject() {
+      if (!confirm('Approve this project and mark as COMPLETED?')) return;
+      try {
+        const updated = await api('PUT', `/projects/${CURRENT_PROJECT.id}`, { status: 'completed' });
+        CURRENT_PROJECT = updated;
+        showToast('Project completed and approved!', 'success');
+        openProject(updated.id);
+        loadProjects();
+        loadDashboard();
+      } catch (e) { showToast(e.message, 'error'); }
+    }
+
+    function isMemberOfProject(userId) {
+      return CURRENT_PROJECT && CURRENT_PROJECT.members.some(m => m.id === userId);
+    }
+
+    async function loadTasks() {
+      if (!CURRENT_PROJECT) return;
+      try {
+        const tasks = await api('GET', `/projects/${CURRENT_PROJECT.id}/tasks`);
+        renderKanban(tasks);
+      } catch (e) {
+        showToast('Failed to load tasks: ' + e.message, 'error');
+      }
+    }
+
+    async function updateAssigneeDropdowns() {
+      const select = document.getElementById('tmAssignee');
+      if (!select) return;
+      const members = CURRENT_PROJECT.members || [];
+      select.innerHTML = '<option value="">Unassigned</option>' + 
+        members.map(m => `<option value="${m.id}">${m.name} (${m.role})</option>`).join('');
+    }
+
+    async function openManageMembers() {
+      if (!CURRENT_PROJECT) return;
+      try {
+        const canEdit = CURRENT_USER && ['admin', 'manager'].includes(CURRENT_USER.role);
+        if (!canEdit && CURRENT_PROJECT.owner_id !== CURRENT_USER.id) {
+           showToast('Not authorized to manage members', 'error');
+           return;
+        }
+        
+        openModal('memberModal');
+        renderCurrentMembers();
+        
+
+        if (allUsers.length === 0) {
+          allUsers = await api('GET', '/users');
+        }
+        const select = document.getElementById('mmUserSelect');
+        const memberIds = (CURRENT_PROJECT.members || []).map(m => m.id);
+        const nonMembers = allUsers.filter(u => !memberIds.includes(u.id));
+        
+        select.innerHTML = '<option value="">Select a user...</option>' + 
+          nonMembers.map(u => `<option value="${u.id}">${u.name} (${u.role})</option>`).join('');
+      } catch (e) {
+        showToast('Failed to load users: ' + e.message, 'error');
+      }
+    }
+
+    function renderCurrentMembers() {
+      const list = document.getElementById('mmCurrentMembers');
+      const members = CURRENT_PROJECT.members || [];
+      if (!members.length) {
+        list.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:10px">No members yet.</div>';
+        return;
+      }
+      list.innerHTML = members.map(m => `
+        <div style="display:flex;align-items:center;gap:10px;background:var(--surface2);padding:8px 12px;border-radius:var(--radius-sm)">
+          <div class="avatar" style="width:24px;height:24px;font-size:10px;background:${m.avatar_color || '#6C63FF'};color:#fff;overflow:hidden">
+            ${m.profile_picture ? `<img src="${m.profile_picture}" style="width:100%;height:100%;object-fit:cover">` : m.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase()}
+          </div>
+          <div style="flex:1">
+            <div style="font-size:13px">${m.name}</div>
+            <div style="font-size:11px;color:var(--muted)">${m.role}</div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="removeMember(${m.id})" style="padding:2px 6px;font-size:10px">Remove</button>
+        </div>
+      `).join('');
+    }
+
+    async function addMember() {
+      const userId = document.getElementById('mmUserSelect').value;
+      if (!userId) return;
+      try {
+        const updatedProject = await api('POST', `/projects/${CURRENT_PROJECT.id}/members`, { user_id: parseInt(userId) });
+        CURRENT_PROJECT = updatedProject;
+
+        const idx = allProjects.findIndex(p => p.id === CURRENT_PROJECT.id);
+        if (idx !== -1) allProjects[idx] = updatedProject;
+        
+        showToast('Member added!', 'success');
+        renderCurrentMembers();
+        openManageMembers(); 
+        updateAssigneeDropdowns();
+        loadProjects(); 
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
+    }
+
+    async function removeMember(userId) {
+      if (!confirm('Remove this member from the project?')) return;
+      try {
+        const updatedProject = await api('DELETE', `/projects/${CURRENT_PROJECT.id}/members/${userId}`);
+        CURRENT_PROJECT = updatedProject;
+        const idx = allProjects.findIndex(p => p.id === CURRENT_PROJECT.id);
+        if (idx !== -1) allProjects[idx] = updatedProject;
+
+        showToast('Member removed', 'success');
+        renderCurrentMembers();
+        openManageMembers(); 
+        updateAssigneeDropdowns();
+        loadProjects();
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
+    }
+
+    function renderKanban(tasks) {
+      const cols = [
+        { key: 'todo', label: 'To Do' },
+        { key: 'in_progress', label: 'In Progress' },
+        { key: 'review', label: 'Review' },
+        { key: 'done', label: 'Done' }
+      ];
+      const board = document.getElementById('kanbanBoard');
+      board.innerHTML = cols.map(c => {
+        const colTasks = tasks.filter(t => t.status === c.key);
+        const cards = colTasks.length ? colTasks.map(renderTaskCard).join('') :
+          `<div style="text-align:center;padding:20px;font-size:12px;color:var(--muted)">No tasks</div>`;
+        return `<div class="kanban-col">
+        <div class="kanban-header">
+          <div class="dot dot-${c.key}"></div>
+          ${c.label}
+          <span class="col-count">${colTasks.length}</span>
+        </div>
+        <div class="kanban-body">${cards}</div>
+      </div>`;
+      }).join('');
+    }
+
+    function renderTaskCard(t) {
+      const asgn = t.assignee ? (() => {
+        const content = t.assignee.profile_picture 
+          ? `<img src="${t.assignee.profile_picture}" style="width:100%;height:100%;object-fit:cover">`
+          : t.assignee.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+        return `<div class="avatar" style="width:22px;height:22px;font-size:9px;background:${t.assignee.avatar_color || '#6C63FF'};color:#fff;overflow:hidden">${content}</div>`;
+      })() : '';
+      const due = t.due_date ? `<span style="font-size:10px;color:var(--muted)">${new Date(t.due_date).toLocaleDateString('en', { month: 'short', day: 'numeric' })}</span>` : '';
+      return `<div class="task-card" onclick="openTaskDetail(${t.id})">
+      <div class="task-title">${t.title}</div>
+      <div class="task-footer">
+        <span class="priority-badge p-${t.priority}">${t.priority}</span>
+        ${due}
+        <span class="task-assignee">${asgn}</span>
+        ${t.comment_count > 0 ? `<span class="task-comments">💬 ${t.comment_count}</span>` : ''}
+      </div>
+    </div>`;
+    }
+
+    function openCreateTask() {
+      document.getElementById('tmTitle').value = '';
+      document.getElementById('tmDesc').value = '';
+      document.getElementById('tmPriority').value = 'medium';
+      document.getElementById('tmDueDate').value = '';
+      openModal('taskModal');
+    }
+
+    async function saveTask() {
+      const title = document.getElementById('tmTitle').value.trim();
+      if (!title) { showToast('Task title required', 'error'); return; }
+      try {
+        await api('POST', `/projects/${CURRENT_PROJECT.id}/tasks`, {
+          title,
+          description: document.getElementById('tmDesc').value.trim() || null,
+          priority: document.getElementById('tmPriority').value,
+          due_date: document.getElementById('tmDueDate').value || null,
+          assignee_id: document.getElementById('tmAssignee').value ? parseInt(document.getElementById('tmAssignee').value) : null
+        });
+        closeModal('taskModal');
+        showToast('Task created!', 'success');
+        loadTasks();
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
+    }
+
+    async function openTaskDetail(taskId) {
+      try {
+        const tasks = await api('GET', `/projects/${CURRENT_PROJECT.id}/tasks`);
+        const task = tasks.find(t => t.id === taskId);
+        if (!task) return;
+        CURRENT_TASK = task;
+        const content = document.getElementById('taskDetailContent');
+        content.innerHTML = `
+        <div class="modal-title">${task.title}</div>
+        ${task.description ? `<p style="font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:16px">${task.description}</p>` : ''}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-control" id="tdStatus">
+              <option value="todo" ${task.status === 'todo' ? 'selected' : ''}>To Do</option>
+              <option value="in_progress" ${task.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+              <option value="review" ${task.status === 'review' ? 'selected' : ''}>Review</option>
+              <option value="done" ${task.status === 'done' ? 'selected' : ''}>Done</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select class="form-control" id="tdPriority">
+              <option value="low" ${task.priority === 'low' ? 'selected' : ''}>Low</option>
+              <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>Medium</option>
+              <option value="high" ${task.priority === 'high' ? 'selected' : ''}>High</option>
+              <option value="critical" ${task.priority === 'critical' ? 'selected' : ''}>Critical</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)">
+          <div class="form-group" style="flex:1;min-width:200px">
+            <label class="form-label">Assignee</label>
+            <select class="form-control" id="tdAssignee">
+               <option value="">Unassigned</option>
+               ${(CURRENT_PROJECT.members || []).map(m => `<option value="${m.id}" ${task.assignee && task.assignee.id === m.id ? 'selected' : ''}>${m.name}</option>`).join('')}
+            </select>
+          </div>
+          <div style="flex:1;padding-top:20px">
+            ${task.due_date ? `<span>Due: <b style="color:var(--text)">${new Date(task.due_date).toLocaleDateString()}</b></span>` : ''}
+            <br>
+            <span>Created by: <b style="color:var(--text)">${task.created_by?.name || 'Unknown'}</b></span>
+          </div>
+        </div>
+      `;
+        openModal('taskDetailModal');
+      } catch (e) { showToast(e.message, 'error'); }
+    }
+
+    async function updateTaskStatus() {
+      if (!CURRENT_TASK) return;
+      try {
+        await api('PUT', `/tasks/${CURRENT_TASK.id}`, {
+          status: document.getElementById('tdStatus').value,
+          priority: document.getElementById('tdPriority').value,
+          assignee_id: document.getElementById('tdAssignee').value ? parseInt(document.getElementById('tdAssignee').value) : null
+        });
+        closeModal('taskDetailModal');
+        showToast('Task updated!', 'success');
+        loadTasks();
+      } catch (e) { showToast(e.message, 'error'); }
+    }
+
+    async function deleteCurrentTask() {
+      if (!CURRENT_TASK) return;
+      if (!confirm('Delete this task?')) return;
+      try {
+        await api('DELETE', `/tasks/${CURRENT_TASK.id}`);
+        closeModal('taskDetailModal');
+        showToast('Task deleted', 'success');
+        loadTasks();
+      } catch (e) { showToast(e.message, 'error'); }
+    }
+
+    function editProject(id) {
+      const p = allProjects.find(x => x.id === id);
+      if (!p) return;
+      EDITING_PROJECT_ID = id;
+      document.getElementById('projectModalTitle').textContent = 'Edit Project';
+      document.getElementById('pmName').value = p.name;
+      document.getElementById('pmDesc').value = p.description || '';
+      document.getElementById('pmStatus').value = p.status;
+      document.getElementById('pmDeadline').value = p.deadline ? p.deadline.split('T')[0] : '';
+      openModal('projectModal');
+    }
+
+    async function deleteProject(id) {
+      if (!confirm('Delete this project and all its tasks?')) return;
+      try {
+        await api('DELETE', '/projects/' + id);
+        showToast('Project deleted', 'success');
+        goBackToProjects();
+        loadDashboard();
+      } catch (e) { showToast(e.message, 'error'); }
+    }
+
+    function goBackToProjects() {
+      CURRENT_PROJECT = null;
+      document.getElementById('nav-tasks').style.display = 'none';
+      showView('projects');
+    }
+
+    async function loadUsers() {
+      try {
+        const users = await api('GET', '/users');
+        allUsers = users;
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = users.map(u => {
+          const initials = u.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+          const avatar = u.profile_picture 
+            ? `<img src="${u.profile_picture}" style="width:100%;height:100%;object-fit:cover">`
+            : initials;
+          
+          const isMe = CURRENT_USER && u.id === CURRENT_USER.id;
+          const joinedDate = new Date(u.created_at).toLocaleDateString();
+
+          return `
+            <tr style="border-bottom:1px solid var(--border);font-size:13.5px">
+              <td style="padding:14px 20px">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div class="avatar" style="background:${u.avatar_color || '#6C63FF'};color:#fff;overflow:hidden">${avatar}</div>
+                  <div>
+                    <div style="font-weight:500">${u.name}${isMe ? ' <small style="color:var(--muted)">(You)</small>' : ''}</div>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:14px 20px;color:var(--muted)">${u.email}</td>
+              <td style="padding:14px 20px">
+                <span class="badge" style="background:var(--surface3);color:var(--text);text-transform:capitalize">${u.role}</span>
+              </td>
+              <td style="padding:14px 20px;color:var(--muted)">${joinedDate}</td>
+              <td style="padding:14px 20px;text-align:right">
+                ${!isMe ? `<button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id})">Delete</button>` : ''}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
+    }
+
+    async function deleteUser(id) {
+      if (!confirm('Are you sure you want to delete this user? All their projects will be reassigned to you.')) return;
+      try {
+        await api('DELETE', `/users/${id}`);
+        showToast('User deleted successfully');
+        loadUsers();
+        loadDashboard();
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
+    }
+
+    function triggerPfpUpload() {
+      document.getElementById('pfpInput').click();
+    }
+
+    async function handlePfpUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 1024 * 1024) {
+        showToast('Image size must be less than 1MB', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = e.target.result;
+        try {
+          const updatedUser = await api('PUT', '/users/me/pfp', { profile_picture: base64 });
+          CURRENT_USER = updatedUser;
+          localStorage.setItem('tasknova_user', JSON.stringify(CURRENT_USER));
+          showToast('Profile picture updated!', 'success');
+          updateSidebar();
+          if (document.getElementById('view-profile').classList.contains('active')) {
+            loadProfileData();
+          }
+        } catch (e) {
+          showToast(e.message, 'error');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadProfileData() {
+      if (!CURRENT_USER) return;
+      
+      const av = document.getElementById('profilePageAvatar');
+      if (CURRENT_USER.profile_picture) {
+        av.innerHTML = `<img src="${CURRENT_USER.profile_picture}" style="width:100%;height:100%;object-fit:cover">`;
+      } else {
+        const initials = CURRENT_USER.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+        av.textContent = initials;
+      }
+      av.style.background = CURRENT_USER.avatar_color || '#6C63FF';
+      
+      document.getElementById('profileNameDisplay').textContent = CURRENT_USER.name;
+      document.getElementById('profileEmailDisplay').textContent = CURRENT_USER.email;
+      document.getElementById('profileRoleBadge').textContent = CURRENT_USER.role;
+      document.getElementById('profileBio').value = CURRENT_USER.bio || '';
+      document.getElementById('profileNotes').value = CURRENT_USER.personal_notes || '';
+      
+      renderRoleSpecificFields();
+    }
+
+    function renderRoleSpecificFields() {
+      const container = document.getElementById('roleSpecificFields');
+      const role = CURRENT_USER.role;
+      let extra = {};
+      try { extra = JSON.parse(CURRENT_USER.extra_data || '{}'); } catch(e) {}
+
+      if (role === 'member') {
+        container.innerHTML = `
+          <h3 style="margin-bottom:16px;font-size:16px">Member Details</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="form-group">
+              <label class="form-label">Skills (comma separated)</label>
+              <input class="form-control" id="extra_skills" value="${extra.skills || ''}" placeholder="e.g. Design, React, Python">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Portfolio URL</label>
+              <input class="form-control" id="extra_portfolio" value="${extra.portfolio || ''}" placeholder="https://...">
+            </div>
+          </div>
+        `;
+      } else if (role === 'manager') {
+        container.innerHTML = `
+          <h3 style="margin-bottom:16px;font-size:16px">Management Details</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="form-group">
+              <label class="form-label">Department</label>
+              <input class="form-control" id="extra_dept" value="${extra.department || ''}" placeholder="e.g. Engineering">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Default Team Name</label>
+              <input class="form-control" id="extra_team" value="${extra.team || ''}" placeholder="e.g. Alpha Squad">
+            </div>
+          </div>
+        `;
+      } else if (role === 'admin') {
+         container.innerHTML = `
+          <h3 style="margin-bottom:16px;font-size:16px">Admin Context</h3>
+          <div class="form-group">
+            <label class="form-label">Admin System Notes</label>
+            <textarea class="form-control" id="extra_admin_notes" placeholder="System-wide notes...">${extra.admin_notes || ''}</textarea>
+          </div>
+        `;
+      }
+    }
+
+    async function saveProfile() {
+      const btn = document.getElementById('saveProfileBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+      
+      const role = CURRENT_USER.role;
+      let extra = {};
+      
+      if (role === 'member') {
+        extra.skills = document.getElementById('extra_skills').value;
+        extra.portfolio = document.getElementById('extra_portfolio').value;
+      } else if (role === 'manager') {
+        extra.department = document.getElementById('extra_dept').value;
+        extra.team = document.getElementById('extra_team').value;
+      } else if (role === 'admin') {
+        extra.admin_notes = document.getElementById('extra_admin_notes').value;
+      }
+
+      const body = {
+        bio: document.getElementById('profileBio').value,
+        personal_notes: document.getElementById('profileNotes').value,
+        extra_data: JSON.stringify(extra)
+      };
+
+      try {
+        const updatedUser = await api('PUT', '/users/me/profile', body);
+        CURRENT_USER = updatedUser;
+        localStorage.setItem('tasknova_user', JSON.stringify(CURRENT_USER));
+        showToast('Profile updated successfully!', 'success');
+        updateSidebar();
+      } catch (e) {
+        showToast(e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Profile Changes';
+      }
+    }
+
+    async function loadProjectComments() {
+      if (!CURRENT_PROJECT) return;
+      try {
+        const comments = await api('GET', `/projects/${CURRENT_PROJECT.id}/comments`);
+        renderProjectComments(comments);
+      } catch (e) { console.error('Failed to load project comments', e); }
+    }
+
+    function renderProjectComments(comments) {
+      const list = document.getElementById('projectCommentsList');
+      if (!comments || !comments.length) {
+        list.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:var(--muted);background:var(--surface2);border-radius:var(--radius-sm)">No feedback yet.</div>';
+        return;
+      }
+      list.innerHTML = comments.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).map(c => {
+        const initials = c.author.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+        const avatar = c.author.profile_picture 
+          ? `<img src="${c.author.profile_picture}" style="width:100%;height:100%;object-fit:cover">`
+          : initials;
+        const isAdminOrManager = ['admin', 'manager'].includes(c.author.role);
+        
+        return `
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <div class="avatar" style="width:28px;height:28px;font-size:11px;background:${c.author.avatar_color || '#6C63FF'};color:#fff;overflow:hidden">${avatar}</div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600">${c.author.name} ${isAdminOrManager ? `<span class="badge" style="font-size:9px;background:var(--primary);padding:1px 6px;margin-left:4px">Reviewer</span>` : ''}</div>
+                <div style="font-size:11px;color:var(--muted)">${new Date(c.created_at).toLocaleString()}</div>
+              </div>
+            </div>
+            <div style="font-size:14px;line-height:1.5;color:var(--text)">${c.content}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function saveProjectComment() {
+      const content = document.getElementById('projectCommentContent').value.trim();
+      if (!content) return;
+      const btn = document.getElementById('submitProjectCommentBtn');
+      btn.disabled = true;
+      try {
+        await api('POST', `/projects/${CURRENT_PROJECT.id}/comments`, { content });
+        document.getElementById('projectCommentContent').value = '';
+        await loadProjectComments();
+        showToast('Comment posted', 'success');
+      } catch (e) {
+        showToast(e.message, 'error');
+      } finally { btn.disabled = false; }
+    }
+
+    function renderCompletionChart(distribution) {
+      if (!distribution) return;
+      const ctx = document.getElementById('completionChart').getContext('2d');
+      
+      const labels = Object.keys(distribution);
+      const values = Object.values(distribution);
+      
+      const data = {
+        labels: labels,
+        datasets: [{
+          label: 'Projects',
+          data: values,
+          backgroundColor: [
+            'rgba(239, 68, 68, 0.7)',
+            'rgba(245, 158, 11, 0.7)',
+            'rgba(6, 182, 212, 0.7)',
+            'rgba(34, 197, 94, 0.7)'
+          ],
+          borderColor: 'transparent',
+          borderWidth: 0,
+          hoverOffset: 12
+        }]
+      };
+
+      if (completionChart) {
+        completionChart.data = data;
+        completionChart.update();
+      } else {
+        completionChart = new Chart(ctx, {
+          type: 'pie',
+          data: data,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { color: '#94a3b8', font: { size: 11 }, usePointStyle: true, padding: 15 }
+              },
+              tooltip: {
+                backgroundColor: '#1e1b4b',
+                padding: 10,
+                cornerRadius: 8
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function renderProgressChart(distribution) {
+      if (!distribution) return;
+      const ctx = document.getElementById('progressChart').getContext('2d');
+      
+      const data = {
+        labels: ['To Do', 'In Progress', 'Review', 'Done'],
+        datasets: [{
+          data: [
+            distribution.todo || 0,
+            distribution.in_progress || 0,
+            distribution.review || 0,
+            distribution.done || 0
+          ],
+          backgroundColor: [
+            '#A5A2FF',
+            '#4F46E5',
+            '#F59E0B',
+            '#22C55E'
+          ],
+          borderWidth: 0,
+          hoverOffset: 10
+        }]
+      };
+
+      if (progressChart) {
+        progressChart.data = data;
+        progressChart.update();
+      } else {
+        progressChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: data,
+          options: {
+            cutout: '75%',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  color: '#94a3b8',
+                  padding: 20,
+                  font: { size: 12, family: 'Jakarta Sans' },
+                  usePointStyle: true
+                }
+              },
+              tooltip: {
+                backgroundColor: '#1e1b4b',
+                titleFont: { size: 14 },
+                bodyFont: { size: 13 },
+                padding: 12,
+                cornerRadius: 8,
+                displayColors: false
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+    document.querySelectorAll('.modal-overlay').forEach(m => {
+      m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+    });
+
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast show ${type}`;
+      setTimeout(() => { t.classList.add('hiding'); }, 2600);
+      setTimeout(() => { t.className = 'toast'; }, 3000);
+    }
+
+
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.btn');
+      if (!btn) return;
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple-span';
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      btn.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    });
+  </script>
+</body>
+
+</html>
