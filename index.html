@@ -950,87 +950,395 @@
       margin-top: 6px;
     }
 
-    .password-wrapper { position: relative; }
-    .password-toggle {
-      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-      background: none; border: none; color: var(--muted); cursor: pointer;
-      padding: 4px; display: flex; align-items: center; transition: color 0.2s;
+    .password-wrapper {
+      position: relative;
     }
-    .password-toggle:hover { color: var(--text); }
-    .password-wrapper .form-control { padding-right: 42px; }
 
-    .logo-img { width: 140px; height: auto; object-fit: contain; }
-    .auth-logo-img { width: 180px; height: auto; object-fit: contain; }
-    .logo { cursor: pointer; transition: opacity 0.2s; }
-    .logo:hover { opacity: 0.85; }
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeScale { from { opacity: 0; transform: scale(0.93); } to { opacity: 1; transform: scale(1); } }
-    @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
-    @keyframes float1 { 0%,100% { transform: translate(0,0) rotate(0deg); } 33% { transform: translate(30px,-40px) rotate(5deg); } 66% { transform: translate(-20px,-55px) rotate(-3deg); } }
-    @keyframes float2 { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-35px,25px) rotate(-5deg); } }
-    @keyframes float3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(20px,-40px) scale(1.08); } }
-    @keyframes rippleEffect { to { transform: scale(4); opacity: 0; } }
-    @keyframes toastIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
-    @keyframes dashWidget { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    @keyframes navSlide { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .password-toggle:hover {
+      color: var(--text);
+    }
 
-    .view.active { animation: fadeIn 0.32s ease-out; }
+    .password-wrapper .form-control {
+      padding-right: 42px;
+    }
+
+    .logo-img {
+      width: 140px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .auth-logo-img {
+      width: 180px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .logo {
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .logo:hover {
+      opacity: 0.85;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeScale {
+      from {
+        opacity: 0;
+        transform: scale(0.93);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -400px 0;
+      }
+
+      100% {
+        background-position: 400px 0;
+      }
+    }
+
+    @keyframes float1 {
+
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+
+      33% {
+        transform: translate(30px, -40px) rotate(5deg);
+      }
+
+      66% {
+        transform: translate(-20px, -55px) rotate(-3deg);
+      }
+    }
+
+    @keyframes float2 {
+
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+
+      50% {
+        transform: translate(-35px, 25px) rotate(-5deg);
+      }
+    }
+
+    @keyframes float3 {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(20px, -40px) scale(1.08);
+      }
+    }
+
+    @keyframes rippleEffect {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    @keyframes toastIn {
+      from {
+        transform: translateX(120%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes toastOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateX(120%);
+        opacity: 0;
+      }
+    }
+
+    @keyframes dashWidget {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes navSlide {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .view.active {
+      animation: fadeIn 0.32s ease-out;
+    }
 
 
-    .stat-card { animation: dashWidget 0.45s ease-out both; }
-    .stat-card:nth-child(1) { animation-delay: 0.04s; }
-    .stat-card:nth-child(2) { animation-delay: 0.1s; }
-    .stat-card:nth-child(3) { animation-delay: 0.16s; }
-    .stat-card:nth-child(4) { animation-delay: 0.22s; }
-    .stat-card:nth-child(5) { animation-delay: 0.28s; }
+    .stat-card {
+      animation: dashWidget 0.45s ease-out both;
+    }
 
-    .nav-item { animation: navSlide 0.28s ease-out both; }
-    .nav-item:nth-child(1) { animation-delay: 0.04s; }
-    .nav-item:nth-child(2) { animation-delay: 0.08s; }
-    .nav-item:nth-child(3) { animation-delay: 0.12s; }
-    .nav-item:nth-child(4) { animation-delay: 0.16s; }
-    .nav-item:nth-child(5) { animation-delay: 0.2s; }
+    .stat-card:nth-child(1) {
+      animation-delay: 0.04s;
+    }
 
-    .project-card { animation: slideUp 0.38s ease-out both; transition: all 0.28s cubic-bezier(0.4,0,0.2,1); }
-    .project-card:nth-child(1) { animation-delay: 0.04s; }
-    .project-card:nth-child(2) { animation-delay: 0.09s; }
-    .project-card:nth-child(3) { animation-delay: 0.14s; }
-    .project-card:nth-child(4) { animation-delay: 0.19s; }
-    .project-card:nth-child(5) { animation-delay: 0.24s; }
-    .project-card:nth-child(6) { animation-delay: 0.29s; }
+    .stat-card:nth-child(2) {
+      animation-delay: 0.1s;
+    }
 
-    .kanban-col { animation: slideUp 0.38s ease-out both; }
-    .kanban-col:nth-child(1) { animation-delay: 0.04s; }
-    .kanban-col:nth-child(2) { animation-delay: 0.1s; }
-    .kanban-col:nth-child(3) { animation-delay: 0.16s; }
-    .kanban-col:nth-child(4) { animation-delay: 0.22s; }
+    .stat-card:nth-child(3) {
+      animation-delay: 0.16s;
+    }
 
-    .auth-card { animation: fadeScale 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+    .stat-card:nth-child(4) {
+      animation-delay: 0.22s;
+    }
+
+    .stat-card:nth-child(5) {
+      animation-delay: 0.28s;
+    }
+
+    .nav-item {
+      animation: navSlide 0.28s ease-out both;
+    }
+
+    .nav-item:nth-child(1) {
+      animation-delay: 0.04s;
+    }
+
+    .nav-item:nth-child(2) {
+      animation-delay: 0.08s;
+    }
+
+    .nav-item:nth-child(3) {
+      animation-delay: 0.12s;
+    }
+
+    .nav-item:nth-child(4) {
+      animation-delay: 0.16s;
+    }
+
+    .nav-item:nth-child(5) {
+      animation-delay: 0.2s;
+    }
+
+    .project-card {
+      animation: slideUp 0.38s ease-out both;
+      transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .project-card:nth-child(1) {
+      animation-delay: 0.04s;
+    }
+
+    .project-card:nth-child(2) {
+      animation-delay: 0.09s;
+    }
+
+    .project-card:nth-child(3) {
+      animation-delay: 0.14s;
+    }
+
+    .project-card:nth-child(4) {
+      animation-delay: 0.19s;
+    }
+
+    .project-card:nth-child(5) {
+      animation-delay: 0.24s;
+    }
+
+    .project-card:nth-child(6) {
+      animation-delay: 0.29s;
+    }
+
+    .kanban-col {
+      animation: slideUp 0.38s ease-out both;
+    }
+
+    .kanban-col:nth-child(1) {
+      animation-delay: 0.04s;
+    }
+
+    .kanban-col:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .kanban-col:nth-child(3) {
+      animation-delay: 0.16s;
+    }
+
+    .kanban-col:nth-child(4) {
+      animation-delay: 0.22s;
+    }
+
+    .auth-card {
+      animation: fadeScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+    }
 
 
-    .auth-shape { position: absolute; border-radius: 50%; opacity: 0.06; filter: blur(2px); pointer-events: none; }
-    .auth-shape-1 { width: 300px; height: 300px; background: var(--accent); top: -80px; left: -100px; animation: float1 18s ease-in-out infinite; }
-    .auth-shape-2 { width: 220px; height: 220px; background: var(--green); bottom: -50px; right: -50px; animation: float2 22s ease-in-out infinite; }
-    .auth-shape-3 { width: 160px; height: 160px; background: var(--orange); top: 40%; right: 18%; animation: float3 15s ease-in-out infinite; }
-    .auth-shape-4 { width: 100px; height: 100px; background: var(--accent2); bottom: 28%; left: 12%; animation: float2 20s ease-in-out infinite reverse; }
+    .auth-shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.06;
+      filter: blur(2px);
+      pointer-events: none;
+    }
 
-    .btn .ripple-span { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.22); transform: scale(0); animation: rippleEffect 0.55s linear; pointer-events: none; }
+    .auth-shape-1 {
+      width: 300px;
+      height: 300px;
+      background: var(--accent);
+      top: -80px;
+      left: -100px;
+      animation: float1 18s ease-in-out infinite;
+    }
+
+    .auth-shape-2 {
+      width: 220px;
+      height: 220px;
+      background: var(--green);
+      bottom: -50px;
+      right: -50px;
+      animation: float2 22s ease-in-out infinite;
+    }
+
+    .auth-shape-3 {
+      width: 160px;
+      height: 160px;
+      background: var(--orange);
+      top: 40%;
+      right: 18%;
+      animation: float3 15s ease-in-out infinite;
+    }
+
+    .auth-shape-4 {
+      width: 100px;
+      height: 100px;
+      background: var(--accent2);
+      bottom: 28%;
+      left: 12%;
+      animation: float2 20s ease-in-out infinite reverse;
+    }
+
+    .btn .ripple-span {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+      transform: scale(0);
+      animation: rippleEffect 0.55s linear;
+      pointer-events: none;
+    }
 
 
-    .toast.show { transform: translateX(0); animation: toastIn 0.4s cubic-bezier(0.21,1.02,0.73,1) forwards; }
-    .toast.hiding { animation: toastOut 0.3s ease-in forwards; }
+    .toast.show {
+      transform: translateX(0);
+      animation: toastIn 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+    }
 
-    .skeleton { background: linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%); background-size: 800px 100%; animation: shimmer 1.6s infinite linear; border-radius: var(--radius-sm); }
+    .toast.hiding {
+      animation: toastOut 0.3s ease-in forwards;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.6s infinite linear;
+      border-radius: var(--radius-sm);
+    }
 
 
-    .task-card { transition: all 0.22s cubic-bezier(0.4,0,0.2,1); }
-    .task-card:active { transform: scale(0.97); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+    .task-card {
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-    .card { animation: fadeScale 0.4s ease-out both; }
+    .task-card:active {
+      transform: scale(0.97);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .card {
+      animation: fadeScale 0.4s ease-out both;
+    }
 
 
 
@@ -1078,8 +1386,17 @@
         <div class="password-wrapper">
           <input class="form-control" id="authPassword" type="password" placeholder="••••••••">
           <button type="button" class="password-toggle" id="pwToggleBtn" onclick="togglePasswordVisibility()">
-            <svg id="eyeOpen" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            <svg id="eyeClosed" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            <svg id="eyeOpen" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <svg id="eyeClosed" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24" style="display:none">
+              <path
+                d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+              <line x1="1" y1="1" x2="23" y2="23" />
+            </svg>
           </button>
         </div>
       </div>
@@ -1099,7 +1416,7 @@
         Don't have an account? <a onclick="toggleAuth()">Sign up</a>
       </div>
 
-      <input id="apiBaseUrl" type="hidden" value="http://localhost:8000">
+      <!-- <input id="apiBaseUrl" type="hidden" value="http://localhost:8000"> -->
     </div>
   </div>
 
@@ -1144,7 +1461,8 @@
         </div>
         <div class="nav-item" id="nav-profile" onclick="showView('profile')">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
           </svg>
           Profile
         </div>
@@ -1233,8 +1551,10 @@
               <div class="section-header" style="margin-bottom:16px">
                 <div class="section-title" style="font-size:18px">Recent Projects</div>
               </div>
-              <div class="projects-grid" id="dashProjectsGrid" style="grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:12px"></div>
-              <button class="btn btn-ghost btn-sm" onclick="showView('projects')" style="margin-top:16px;align-self:center">View all Projects →</button>
+              <div class="projects-grid" id="dashProjectsGrid"
+                style="grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:12px"></div>
+              <button class="btn btn-ghost btn-sm" onclick="showView('projects')"
+                style="margin-top:16px;align-self:center">View all Projects →</button>
             </div>
           </div>
         </div>
@@ -1251,12 +1571,15 @@
           <div class="section-header">
             <div class="section-title">Kanban Board</div>
             <div style="display:flex;gap:10px">
-              <button class="btn btn-ghost btn-sm" onclick="openManageMembers()" id="manageMembersBtn">Manage Members</button>
-              <button class="btn btn-primary btn-sm" onclick="openCreateTask()" id="createNewTaskBtn">+ New Task</button>
+              <button class="btn btn-ghost btn-sm" onclick="openManageMembers()" id="manageMembersBtn">Manage
+                Members</button>
+              <button class="btn btn-primary btn-sm" onclick="openCreateTask()" id="createNewTaskBtn">+ New
+                Task</button>
             </div>
           </div>
-          
-          <div class="card" id="projectProgressSection" style="margin-bottom:24px;display:none;background:var(--surface2)">
+
+          <div class="card" id="projectProgressSection"
+            style="margin-bottom:24px;display:none;background:var(--surface2)">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
               <h4 style="margin:0;font-size:14px;color:var(--text)">Update Project Progress</h4>
               <span id="progressPercentDisplay" style="font-size:14px;font-weight:700;color:var(--accent2)">0%</span>
@@ -1264,20 +1587,27 @@
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:end">
               <div>
                 <label class="form-label" style="font-size:10px">Completion Percentage</label>
-                <input type="range" id="progressRange" min="0" max="100" step="1" value="0" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById('progressPercentDisplay').textContent = this.value + '%'">
+                <input type="range" id="progressRange" min="0" max="100" step="1" value="0"
+                  style="width:100%;accent-color:var(--accent)"
+                  oninput="document.getElementById('progressPercentDisplay').textContent = this.value + '%'">
               </div>
               <div style="display:flex;gap:10px;align-items:center">
                 <div style="flex:1">
                   <label class="form-label" style="font-size:10px">Completion Image / Evidence</label>
-                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('evidenceInput').click()" style="width:100%">Choose Image</button>
-                  <input type="file" id="evidenceInput" style="display:none" accept="image/*" onchange="previewEvidence(event)">
+                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('evidenceInput').click()"
+                    style="width:100%">Choose Image</button>
+                  <input type="file" id="evidenceInput" style="display:none" accept="image/*"
+                    onchange="previewEvidence(event)">
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="saveProjectProgress()" style="height:36px">Update Progress</button>
+                <button class="btn btn-primary btn-sm" onclick="saveProjectProgress()" style="height:36px">Update
+                  Progress</button>
               </div>
             </div>
-            <div id="evidencePreviewContainer" style="margin-top:16px;display:none;border-top:1px solid var(--border);padding-top:16px">
-                <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Evidence Preview:</div>
-                <img id="evidencePreviewImg" src="" style="max-height:150px;border-radius:var(--radius-sm);border:1px solid var(--border2)">
+            <div id="evidencePreviewContainer"
+              style="margin-top:16px;display:none;border-top:1px solid var(--border);padding-top:16px">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Evidence Preview:</div>
+              <img id="evidencePreviewImg" src=""
+                style="max-height:150px;border-radius:var(--radius-sm);border:1px solid var(--border2)">
             </div>
           </div>
 
@@ -1288,11 +1618,13 @@
               <h3 style="margin:0;font-size:18px">Project Feedback & Comments</h3>
               <div id="projectReviewActions" style="display:flex;gap:8px"></div>
             </div>
-            
+
             <div class="card" style="padding:20px;margin-bottom:24px">
               <div style="display:flex;gap:12px">
-                <textarea class="form-control" id="projectCommentContent" placeholder="Ask for changes or provide feedback..." style="flex:1;min-height:48px"></textarea>
-                <button class="btn btn-primary" onclick="saveProjectComment()" id="submitProjectCommentBtn" style="height:auto">Post</button>
+                <textarea class="form-control" id="projectCommentContent"
+                  placeholder="Ask for changes or provide feedback..." style="flex:1;min-height:48px"></textarea>
+                <button class="btn btn-primary" onclick="saveProjectComment()" id="submitProjectCommentBtn"
+                  style="height:auto">Post</button>
               </div>
             </div>
 
@@ -1304,7 +1636,8 @@
           <div class="card" style="padding:0;overflow:hidden">
             <table style="width:100%;border-collapse:collapse;text-align:left">
               <thead>
-                <tr style="background:var(--surface2);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">
+                <tr
+                  style="background:var(--surface2);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">
                   <th style="padding:16px 20px;font-weight:600">User</th>
                   <th style="padding:16px 20px;font-weight:600">Email</th>
                   <th style="padding:16px 20px;font-weight:600">Role</th>
@@ -1322,26 +1655,36 @@
             <div class="card" style="margin-bottom:24px;padding:32px">
               <div style="display:flex;align-items:center;gap:32px;margin-bottom:32px">
                 <div style="position:relative">
-                  <div class="avatar" id="profilePageAvatar" style="width:120px;height:120px;font-size:40px;border:4px solid var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden"></div>
-                  <button class="btn btn-primary btn-sm" onclick="triggerPfpUpload()" style="position:absolute;bottom:0;right:0;border-radius:50%;width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.3)">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  <div class="avatar" id="profilePageAvatar"
+                    style="width:120px;height:120px;font-size:40px;border:4px solid var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden">
+                  </div>
+                  <button class="btn btn-primary btn-sm" onclick="triggerPfpUpload()"
+                    style="position:absolute;bottom:0;right:0;border-radius:50%;width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.3)">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                      <circle cx="12" cy="13" r="4" />
+                    </svg>
                   </button>
                 </div>
                 <div>
                   <h2 id="profileNameDisplay" style="margin:0 0 4px 0;font-size:28px;color:var(--text)">Name</h2>
-                  <div id="profileEmailDisplay" style="color:var(--muted);font-size:14px;margin-bottom:12px">email@example.com</div>
-                  <span id="profileRoleBadge" class="badge" style="background:var(--primary);color:#fff;font-size:12px;padding:4px 12px;text-transform:capitalize">Member</span>
+                  <div id="profileEmailDisplay" style="color:var(--muted);font-size:14px;margin-bottom:12px">
+                    email@example.com</div>
+                  <span id="profileRoleBadge" class="badge"
+                    style="background:var(--primary);color:#fff;font-size:12px;padding:4px 12px;text-transform:capitalize">Member</span>
                 </div>
               </div>
 
               <div class="form-group">
                 <label class="form-label">Bio (Public to Project Members)</label>
-                <textarea class="form-control" id="profileBio" rows="3" placeholder="Tell us about yourself..."></textarea>
+                <textarea class="form-control" id="profileBio" rows="3"
+                  placeholder="Tell us about yourself..."></textarea>
               </div>
 
               <div class="form-group">
                 <label class="form-label">Personal Notes (Private - Only you see this)</label>
-                <textarea class="form-control" id="profileNotes" rows="5" placeholder="Write something for yourself..."></textarea>
+                <textarea class="form-control" id="profileNotes" rows="5"
+                  placeholder="Write something for yourself..."></textarea>
                 <div style="font-size:11px;color:var(--muted);margin-top:6px">These notes are strictly private.</div>
               </div>
 
@@ -1349,7 +1692,8 @@
               </div>
 
               <div style="margin-top:32px;display:flex;justify-content:flex-end">
-                <button class="btn btn-primary" onclick="saveProfile()" id="saveProfileBtn">Save Profile Changes</button>
+                <button class="btn btn-primary" onclick="saveProfile()" id="saveProfileBtn">Save Profile
+                  Changes</button>
               </div>
             </div>
           </div>
@@ -1455,7 +1799,8 @@
       </div>
       <div style="margin-top:20px">
         <label class="form-label">Current Members</label>
-        <div id="mmCurrentMembers" style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div>
+        <div id="mmCurrentMembers" style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:8px">
+        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-ghost" onclick="closeModal('memberModal')">Close</button>
@@ -1466,7 +1811,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const API = 'http://localhost:8000';
+    const API = 'https://tasknova-backend-cp22.onrender.com';
     let TOKEN = localStorage.getItem('tasknova_token');
     let CURRENT_USER = JSON.parse(localStorage.getItem('tasknova_user') || 'null');
     let CURRENT_PROJECT = null;
@@ -1497,7 +1842,7 @@
 
     function updateSidebar() {
       if (!CURRENT_USER) return;
-      
+
       const av = document.getElementById('sidebarAvatar');
       if (CURRENT_USER.profile_picture) {
         av.innerHTML = `<img src="${CURRENT_USER.profile_picture}" style="width:100%;height:100%;object-fit:cover">`;
@@ -1505,7 +1850,7 @@
         const initials = CURRENT_USER.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
         av.textContent = initials;
       }
-      
+
       av.style.background = CURRENT_USER.avatar_color || '#6C63FF';
       document.getElementById('sidebarName').textContent = CURRENT_USER.name;
       document.getElementById('sidebarRole').textContent = CURRENT_USER.role;
@@ -1527,16 +1872,16 @@
         if (res.status === 204) return null;
         const data = await res.json();
         if (!res.ok) {
-           console.error(`API Error [${res.status}] ${path}:`, data);
-           const detail = data.detail;
-           const msg = typeof detail === 'string' ? detail : Array.isArray(detail) ? detail.map(e => e.msg || e.message || JSON.stringify(e)).join(', ') : 'Request failed';
-           throw new Error(msg);
+          console.error(`API Error [${res.status}] ${path}:`, data);
+          const detail = data.detail;
+          const msg = typeof detail === 'string' ? detail : Array.isArray(detail) ? detail.map(e => e.msg || e.message || JSON.stringify(e)).join(', ') : 'Request failed';
+          throw new Error(msg);
         }
         return data;
       } catch (e) {
         console.error(`Network or Fetch Error ${path}:`, e);
         if (e.message === 'Failed to fetch') {
-           throw new Error('Could not connect to server. Ensure backend is running.');
+          throw new Error('Could not connect to server. Ensure backend is running.');
         }
         throw e;
       }
@@ -1635,7 +1980,7 @@
 
       const titles = { dashboard: 'Dashboard', projects: 'Projects', tasks: 'Tasks', users: 'User Management', profile: 'My Profile' };
       document.getElementById('pageTitle').textContent = titles[v] || v;
-      
+
       if (v === 'profile') loadProfileData();
 
       const canCreate = CURRENT_USER && ['admin', 'manager'].includes(CURRENT_USER.role);
@@ -1667,7 +2012,7 @@
         document.getElementById('s-lifetimeCompleted').textContent = stats.lifetime_completed_projects;
         document.getElementById('s-inProgressTasks').textContent = stats.in_progress_tasks;
         document.getElementById('s-overdueTasks').textContent = stats.overdue_tasks;
-        
+
         renderProgressChart(stats.task_status_distribution);
         renderCompletionChart(stats.project_completion_distribution);
       } catch (e) {
@@ -1706,14 +2051,14 @@
     function renderProjectCard(p) {
       const members = (p.members || []).slice(0, 5);
       const memberAvatars = members.map(m => {
-        const content = m.profile_picture 
+        const content = m.profile_picture
           ? `<img src="${m.profile_picture}" style="width:100%;height:100%;object-fit:cover">`
           : m.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
         return `<div class="avatar" style="background:${m.avatar_color || '#6C63FF'};color:#fff;overflow:hidden">${content}</div>`;
       }).join('');
       const extraMembers = (p.members || []).length > 5 ? `<span style="font-size:11px;color:var(--muted);margin-left:8px">+${p.members.length - 5}</span>` : '';
       const dl = p.deadline ? `<span class="badge" style="background:var(--surface2);color:var(--muted)">📅 ${new Date(p.deadline).toLocaleDateString('en', { month: 'short', day: 'numeric' })}</span>` : '';
-      
+
       const progress = p.completion_percentage || 0;
       const progressHtml = `
         <div style="margin-top:14px">
@@ -1818,15 +2163,15 @@
 
       const canUpdateProgress = isMember && CURRENT_PROJECT.status === 'active';
       document.getElementById('projectProgressSection').style.display = canUpdateProgress ? 'block' : 'none';
-      
+
       const range = document.getElementById('progressRange');
       range.value = CURRENT_PROJECT.completion_percentage || 0;
       document.getElementById('progressPercentDisplay').textContent = (CURRENT_PROJECT.completion_percentage || 0) + '%';
-      
+
 
       const prev = document.getElementById('evidencePreviewContainer');
       const img = document.getElementById('evidencePreviewImg');
-      
+
       if (CURRENT_PROJECT.completion_image) {
         prev.style.display = 'block';
         if (isAdmin) {
@@ -1849,7 +2194,7 @@
 
       const reviewActions = document.getElementById('projectReviewActions');
       reviewActions.innerHTML = '';
-      
+
       if (isAdminOrManager && CURRENT_PROJECT.status === 'review') {
         reviewActions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="approveProject()" style="padding:6px 12px">Approve & Complete Project</button>`;
       } else if (isMember && CURRENT_PROJECT.status === 'active' && CURRENT_PROJECT.completion_percentage === 100) {
@@ -1882,7 +2227,7 @@
       const progress = parseInt(document.getElementById('progressRange').value);
       const body = { completion_percentage: progress };
       if (evidenceBase64) body.completion_image = evidenceBase64;
-      
+
       try {
         const updated = await api('PUT', `/projects/${CURRENT_PROJECT.id}`, body);
         CURRENT_PROJECT = updated;
@@ -1936,7 +2281,7 @@
       const select = document.getElementById('tmAssignee');
       if (!select) return;
       const members = CURRENT_PROJECT.members || [];
-      select.innerHTML = '<option value="">Unassigned</option>' + 
+      select.innerHTML = '<option value="">Unassigned</option>' +
         members.map(m => `<option value="${m.id}">${m.name} (${m.role})</option>`).join('');
     }
 
@@ -1945,13 +2290,13 @@
       try {
         const canEdit = CURRENT_USER && ['admin', 'manager'].includes(CURRENT_USER.role);
         if (!canEdit && CURRENT_PROJECT.owner_id !== CURRENT_USER.id) {
-           showToast('Not authorized to manage members', 'error');
-           return;
+          showToast('Not authorized to manage members', 'error');
+          return;
         }
-        
+
         openModal('memberModal');
         renderCurrentMembers();
-        
+
 
         if (allUsers.length === 0) {
           allUsers = await api('GET', '/users');
@@ -1959,8 +2304,8 @@
         const select = document.getElementById('mmUserSelect');
         const memberIds = (CURRENT_PROJECT.members || []).map(m => m.id);
         const nonMembers = allUsers.filter(u => !memberIds.includes(u.id));
-        
-        select.innerHTML = '<option value="">Select a user...</option>' + 
+
+        select.innerHTML = '<option value="">Select a user...</option>' +
           nonMembers.map(u => `<option value="${u.id}">${u.name} (${u.role})</option>`).join('');
       } catch (e) {
         showToast('Failed to load users: ' + e.message, 'error');
@@ -1977,7 +2322,7 @@
       list.innerHTML = members.map(m => `
         <div style="display:flex;align-items:center;gap:10px;background:var(--surface2);padding:8px 12px;border-radius:var(--radius-sm)">
           <div class="avatar" style="width:24px;height:24px;font-size:10px;background:${m.avatar_color || '#6C63FF'};color:#fff;overflow:hidden">
-            ${m.profile_picture ? `<img src="${m.profile_picture}" style="width:100%;height:100%;object-fit:cover">` : m.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase()}
+            ${m.profile_picture ? `<img src="${m.profile_picture}" style="width:100%;height:100%;object-fit:cover">` : m.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
           </div>
           <div style="flex:1">
             <div style="font-size:13px">${m.name}</div>
@@ -1997,12 +2342,12 @@
 
         const idx = allProjects.findIndex(p => p.id === CURRENT_PROJECT.id);
         if (idx !== -1) allProjects[idx] = updatedProject;
-        
+
         showToast('Member added!', 'success');
         renderCurrentMembers();
-        openManageMembers(); 
+        openManageMembers();
         updateAssigneeDropdowns();
-        loadProjects(); 
+        loadProjects();
       } catch (e) {
         showToast(e.message, 'error');
       }
@@ -2018,7 +2363,7 @@
 
         showToast('Member removed', 'success');
         renderCurrentMembers();
-        openManageMembers(); 
+        openManageMembers();
         updateAssigneeDropdowns();
         loadProjects();
       } catch (e) {
@@ -2051,7 +2396,7 @@
 
     function renderTaskCard(t) {
       const asgn = t.assignee ? (() => {
-        const content = t.assignee.profile_picture 
+        const content = t.assignee.profile_picture
           ? `<img src="${t.assignee.profile_picture}" style="width:100%;height:100%;object-fit:cover">`
           : t.assignee.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
         return `<div class="avatar" style="width:22px;height:22px;font-size:9px;background:${t.assignee.avatar_color || '#6C63FF'};color:#fff;overflow:hidden">${content}</div>`;
@@ -2204,10 +2549,10 @@
         const tbody = document.getElementById('userTableBody');
         tbody.innerHTML = users.map(u => {
           const initials = u.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-          const avatar = u.profile_picture 
+          const avatar = u.profile_picture
             ? `<img src="${u.profile_picture}" style="width:100%;height:100%;object-fit:cover">`
             : initials;
-          
+
           const isMe = CURRENT_USER && u.id === CURRENT_USER.id;
           const joinedDate = new Date(u.created_at).toLocaleDateString();
 
@@ -2283,7 +2628,7 @@
 
     function loadProfileData() {
       if (!CURRENT_USER) return;
-      
+
       const av = document.getElementById('profilePageAvatar');
       if (CURRENT_USER.profile_picture) {
         av.innerHTML = `<img src="${CURRENT_USER.profile_picture}" style="width:100%;height:100%;object-fit:cover">`;
@@ -2292,13 +2637,13 @@
         av.textContent = initials;
       }
       av.style.background = CURRENT_USER.avatar_color || '#6C63FF';
-      
+
       document.getElementById('profileNameDisplay').textContent = CURRENT_USER.name;
       document.getElementById('profileEmailDisplay').textContent = CURRENT_USER.email;
       document.getElementById('profileRoleBadge').textContent = CURRENT_USER.role;
       document.getElementById('profileBio').value = CURRENT_USER.bio || '';
       document.getElementById('profileNotes').value = CURRENT_USER.personal_notes || '';
-      
+
       renderRoleSpecificFields();
     }
 
@@ -2306,7 +2651,7 @@
       const container = document.getElementById('roleSpecificFields');
       const role = CURRENT_USER.role;
       let extra = {};
-      try { extra = JSON.parse(CURRENT_USER.extra_data || '{}'); } catch(e) {}
+      try { extra = JSON.parse(CURRENT_USER.extra_data || '{}'); } catch (e) { }
 
       if (role === 'member') {
         container.innerHTML = `
@@ -2337,7 +2682,7 @@
           </div>
         `;
       } else if (role === 'admin') {
-         container.innerHTML = `
+        container.innerHTML = `
           <h3 style="margin-bottom:16px;font-size:16px">Admin Context</h3>
           <div class="form-group">
             <label class="form-label">Admin System Notes</label>
@@ -2351,10 +2696,10 @@
       const btn = document.getElementById('saveProfileBtn');
       btn.disabled = true;
       btn.textContent = 'Saving...';
-      
+
       const role = CURRENT_USER.role;
       let extra = {};
-      
+
       if (role === 'member') {
         extra.skills = document.getElementById('extra_skills').value;
         extra.portfolio = document.getElementById('extra_portfolio').value;
@@ -2399,13 +2744,13 @@
         list.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:var(--muted);background:var(--surface2);border-radius:var(--radius-sm)">No feedback yet.</div>';
         return;
       }
-      list.innerHTML = comments.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).map(c => {
+      list.innerHTML = comments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).map(c => {
         const initials = c.author.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-        const avatar = c.author.profile_picture 
+        const avatar = c.author.profile_picture
           ? `<img src="${c.author.profile_picture}" style="width:100%;height:100%;object-fit:cover">`
           : initials;
         const isAdminOrManager = ['admin', 'manager'].includes(c.author.role);
-        
+
         return `
           <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
@@ -2439,10 +2784,10 @@
     function renderCompletionChart(distribution) {
       if (!distribution) return;
       const ctx = document.getElementById('completionChart').getContext('2d');
-      
+
       const labels = Object.keys(distribution);
       const values = Object.values(distribution);
-      
+
       const data = {
         labels: labels,
         datasets: [{
@@ -2489,7 +2834,7 @@
     function renderProgressChart(distribution) {
       if (!distribution) return;
       const ctx = document.getElementById('progressChart').getContext('2d');
-      
+
       const data = {
         labels: ['To Do', 'In Progress', 'Review', 'Done'],
         datasets: [{
@@ -2560,7 +2905,7 @@
     }
 
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
       const btn = e.target.closest('.btn');
       if (!btn) return;
       const ripple = document.createElement('span');
