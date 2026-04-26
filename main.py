@@ -25,7 +25,7 @@ from crud import (
     create_comment, get_comments,
     get_dashboard_stats
 )
-
+from fastapi.staticfiles import StaticFiles
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -174,3 +174,4 @@ def list_project_comments(project_id: int, credentials: HTTPAuthorizationCredent
 def dashboard(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
     current = get_current_user(credentials.credentials, db)
     return get_dashboard_stats(db, current)
+app.mount("/", StaticFiles(directory=".", html=True), name="static")
